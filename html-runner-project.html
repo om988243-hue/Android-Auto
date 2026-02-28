@@ -1,0 +1,281 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+          /* Base reset */
+          * { box-sizing: border-box; }
+          /* User CSS */
+          
+        </style>
+        <script>
+            // Capture console.log to display in parent (Optional future enhancement, currently just preventing errors)
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error('Preview Error:', message);
+            };
+        </script>
+      </head>
+      <body>
+        <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Dashboard Pro - Search Edition</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --accent: #3483eb;
+            --top-gap: 20px;
+            --giant-black-space: 1000px;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto; 
+        }
+
+        .app-view {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            padding-top: var(--top-gap);
+        }
+
+        .main-layout {
+            flex: 1;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 70px;
+            background: #080808;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            border-left: 1px solid #222;
+        }
+
+        .icon-btn {
+            font-size: 24px;
+            background: none; border: none;
+            color: #444; cursor: pointer;
+        }
+
+        .icon-btn.active { color: var(--accent); }
+
+        .dashboard-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr; 
+            grid-gap: 15px;
+            padding: 10px 15px;
+        }
+
+        /* حاوية الخريطة مع إضافة وضع البحث */
+        .map-section {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #222;
+            position: relative; /* مهم لتموضع شريط البحث */
+        }
+
+        /* تصميم شريط البحث */
+        .search-box {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 5px 15px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            width: 70%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .side-widgets {
+            display: grid;
+            grid-template-rows: 1fr 1.2fr;
+            grid-gap: 15px;
+        }
+
+        .widget-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 1px solid #222;
+        }
+
+        .clock-widget { font-size: 40px; font-weight: 300; }
+        .date-text { color: var(--accent); font-size: 13px; }
+
+        .music-title { font-size: 14px; color: #888; text-align: center; margin-bottom: 10px; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .music-controls { display: flex; gap: 25px; font-size: 28px; }
+
+        .add-music-btn { margin-top: 15px; background: #222; border: none; color: #aaa; padding: 8px 15px; border-radius: 10px; font-size: 11px; cursor: pointer; }
+
+        .giant-bottom-space {
+            height: var(--giant-black-space);
+            background-color: #000000;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+            color: #222;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-view">
+        <div class="main-layout">
+            <div class="sidebar">
+                <button class="icon-btn active">🏠</button>
+                <button class="icon-btn">📍</button>
+                <button class="icon-btn">🎵</button>
+                <button class="icon-btn" onclick="location.reload()">🔄</button>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="map-section">
+                    <div class="search-box">
+                        <input type="text" id="mapSearch" placeholder="ابحث عن مكان (مثلاً: دبي، القاهرة)..." onkeypress="handleSearch(event)">
+                        <button onclick="executeSearch()">🔍</button>
+                    </div>
+                    <iframe id="googleMap" src="https://maps.google.com/maps?q=Cairo&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+                </div>
+
+                <div class="side-widgets">
+                    <div class="widget-card">
+                        <div class="clock-widget" id="time">00:00</div>
+                        <div id="date" class="date-text">-- --- 2026</div>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="music-title" id="songName">بانتظار ملف صوتي</div>
+                        <div class="music-controls">
+                            <span onclick="control('prev')">⏮</span>
+                            <span id="playIcon" onclick="control('play')">▶</span>
+                            <span onclick="control('next')">⏭</span>
+                        </div>
+                        <button class="add-music-btn" onclick="document.getElementById('musicPicker').click()">📁 اختيار أغنية</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="giant-bottom-space">
+        (نهاية مساحة الأمان السوداء)
+    </div>
+
+    <input type="file" id="musicPicker" accept="audio/*" style="display: none;">
+    <audio id="mainAudio"></audio>
+
+    <script>
+        // تحديث الوقت والتاريخ
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            document.getElementById('date').innerText = now.toLocaleDateString('ar-EG', options);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // منطق البحث في الخريطة
+        function executeSearch() {
+            const query = document.getElementById('mapSearch').value;
+            if (query.trim() !== "") {
+                const mapIframe = document.getElementById('googleMap');
+                // تحديث رابط الخريطة مع اسم المكان الجديد
+                const newMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+                mapIframe.src = newMapUrl;
+            }
+        }
+
+        function handleSearch(event) {
+            if (event.key === "Enter") {
+                executeSearch();
+            }
+        }
+
+        // التحكم في الموسيقى
+        const musicPicker = document.getElementById('musicPicker');
+        const mainAudio = document.getElementById('mainAudio');
+        const songNameDisplay = document.getElementById('songName');
+        const playIcon = document.getElementById('playIcon');
+
+        musicPicker.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('audio/')) {
+                const url = URL.createObjectURL(file);
+                mainAudio.src = url;
+                mainAudio.play();
+                songNameDisplay.innerText = file.name;
+                playIcon.innerText = "⏸";
+            }
+        };
+
+        function control(action) {
+            if (action === 'play') {
+                if (!mainAudio.src) return;
+                if (mainAudio.paused) { mainAudio.play(); playIcon.innerText = "⏸"; }
+                else { mainAudio.pause(); playIcon.innerText = "▶"; }
+            }
+        }
+    </script>
+</body>
+</html>
+
+        <script>
+          try {
+            
+          } catch (err) {
+            console.error('Runtime Error:', err);
+            document.body.innerHTML += '<div style="color:red; background:#ffe6e6; padding:10px; margin-top:20px; border-radius:4px; border:1px solid red;"><strong>Runtime Error:</strong> ' + err.message + '</div>';
+          }
+        </script>
+      </body>
+    </html>
+  
